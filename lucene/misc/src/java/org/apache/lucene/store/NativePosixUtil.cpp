@@ -43,7 +43,8 @@
  * Signature: (Ljava/io/FileDescriptor;JJI)V
  */
 extern "C"
-JNIEXPORT jint JNICALL Java_org_apache_lucene_store_NativePosixUtil_posix_1fadvise(JNIEnv *env, jclass _ignore, jobject fileDescriptor, jlong offset, jlong len, jint advice)
+JNIEXPORT jint JNICALL Java_org_apache_lucene_store_NativePosixUtil_posix_1fadvise(
+JNIEnv *env, jclass _ignore, jobject fileDescriptor, jlong offset, jlong len, jint advice)
 {
   jfieldID field_fd;
   jmethodID const_fdesc;

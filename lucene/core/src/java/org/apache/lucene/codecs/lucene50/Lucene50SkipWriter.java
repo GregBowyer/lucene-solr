@@ -43,7 +43,7 @@ import org.apache.lucene.codecs.MultiLevelSkipListWriter;
  * 4. start offset.
  *
  */
-final class Lucene50SkipWriter extends MultiLevelSkipListWriter {
+public final class Lucene50SkipWriter extends MultiLevelSkipListWriter {
   private int[] lastSkipDoc;
   private long[] lastSkipDocPointer;
   private long[] lastSkipPosPointer;

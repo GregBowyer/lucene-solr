@@ -52,7 +52,7 @@ import static org.apache.lucene.codecs.lucene50.Lucene50PostingsFormat.BLOCK_SIZ
  * Therefore, we'll trim df before passing it to the interface. see trim(int)
  *
  */
-final class Lucene50SkipReader extends MultiLevelSkipListReader {
+public final class Lucene50SkipReader extends MultiLevelSkipListReader {
   private long docPointer[];
   private long posPointer[];
   private long payPointer[];

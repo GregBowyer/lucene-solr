@@ -552,6 +552,28 @@
     <property name="memory-javadocs.uptodate" value="true"/>
   </target>
 
+  <property name="intrinsics.jar" value="${common.dir}/build/intrinsics/lucene-intrinsics-${version}.jar"/>
+  <target name="check-intrinsics-uptodate" unless="intrinsics.uptodate">
+    <module-uptodate name="intrinsics" jarfile="${intrinsics.jar}" property="intrinsics.uptodate"/>
+  </target>
+  <target name="jar-intrinsics" unless="intrinsics.uptodate" depends="check-intrinsics-uptodate">
+    <ant dir="${common.dir}/intrinsics" target="jar-core" inheritAll="false">
+      <propertyset refid="uptodate.and.compiled.properties"/>
+    </ant>
+    <property name="intrinsics.uptodate" value="true"/>
+  </target>
+
+  <property name="intrinsics-javadoc.jar" value="${common.dir}/build/intrinsics/lucene-intrinsics-${version}-javadoc.jar"/>
+  <target name="check-intrinsics-javadocs-uptodate" unless="intrinsics-javadocs.uptodate">
+    <module-uptodate name="intrinsics" jarfile="${intrinsics-javadoc.jar}" property="intrinsics-javadocs.uptodate"/>
+  </target>
+  <target name="javadocs-intrinsics" unless="intrinsics-javadocs.uptodate" depends="check-intrinsics-javadocs-uptodate">
+    <ant dir="${common.dir}/intrinsics" target="javadocs" inheritAll="false">
+      <propertyset refid="uptodate.and.compiled.properties"/>
+    </ant>
+    <property name="intrinsics-javadocs.uptodate" value="true"/>
+  </target>
+
   <property name="misc.jar" value="${common.dir}/build/misc/lucene-misc-${version}.jar"/>
   <target name="check-misc-uptodate" unless="misc.uptodate">
     <module-uptodate name="misc" jarfile="${misc.jar}" property="misc.uptodate"/>

@@ -183,7 +183,7 @@ public abstract class DataOutput {
    * @throws IOException If there is an I/O error writing to the underlying medium.
    * @see DataInput#readVInt()
    */
-  public final void writeVInt(int i) throws IOException {
+  public void writeVInt(int i) throws IOException {
     while ((i & ~0x7F) != 0) {
       writeByte((byte)((i & 0x7F) | 0x80));
       i >>>= 7;

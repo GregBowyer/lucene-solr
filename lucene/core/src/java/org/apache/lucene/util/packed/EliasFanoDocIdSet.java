@@ -114,7 +114,6 @@ public class EliasFanoDocIdSet extends DocIdSet {
   /** This DocIdSet implementation is cacheable.
    * @return <code>true</code>
    */
-  @Override
   public boolean isCacheable() {
     return true;
   }
