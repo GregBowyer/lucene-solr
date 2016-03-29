@@ -411,7 +411,8 @@ public final class IntrinsicsPostingsFormat extends PostingsFormat {
   /** Creates {@code Lucene50PostingsFormat} with default
    *  settings. */
   public IntrinsicsPostingsFormat() {
-    this(BlockTreeTermsWriter.DEFAULT_MIN_BLOCK_SIZE, BlockTreeTermsWriter.DEFAULT_MAX_BLOCK_SIZE);
+    //this(BlockTreeTermsWriter.DEFAULT_MIN_BLOCK_SIZE, BlockTreeTermsWriter.DEFAULT_MAX_BLOCK_SIZE);
+    this(128, 512);
   }
 
   /** Creates {@code Lucene50PostingsFormat} with custom
