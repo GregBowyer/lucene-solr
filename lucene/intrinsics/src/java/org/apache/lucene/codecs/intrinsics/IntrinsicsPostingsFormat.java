@@ -21,6 +21,7 @@ import org.apache.lucene.index.TermState;
 import org.apache.lucene.store.DataOutput;
 import org.apache.lucene.util.IOUtils;
 import org.apache.lucene.util.packed.PackedInts;
+import static org.apache.lucene.intrinsics.Intrinsics.BLOCK_SIZE;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -405,7 +406,7 @@ public final class IntrinsicsPostingsFormat extends PostingsFormat {
    * a single packed block.
    */
   // NOTE: must be multiple of 64 because of PackedInts long-aligned encoding/decoding
-  public final static int BLOCK_SIZE = 128;
+  //public final static int BLOCK_SIZE = 128;
 
   /** Creates {@code Lucene50PostingsFormat} with default
    *  settings. */

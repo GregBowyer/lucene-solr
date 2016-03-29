@@ -23,7 +23,8 @@ import org.apache.lucene.util.RamUsageEstimator;
 
 import static org.apache.lucene.intrinsics.Intrinsics.MAX_DATA_SIZE;
 import static org.apache.lucene.intrinsics.Intrinsics.MAX_ENCODED_SIZE;
-import static org.apache.lucene.codecs.intrinsics.IntrinsicsPostingsFormat.BLOCK_SIZE;
+import static org.apache.lucene.intrinsics.Intrinsics.BLOCK_SIZE;
+//import static org.apache.lucene.codecs.intrinsics.IntrinsicsPostingsFormat.BLOCK_SIZE;
 import static org.apache.lucene.codecs.intrinsics.IntrinsicsPostingsFormat.DOC_CODEC;
 import static org.apache.lucene.codecs.intrinsics.IntrinsicsPostingsFormat.MAX_SKIP_LEVELS;
 import static org.apache.lucene.codecs.intrinsics.IntrinsicsPostingsFormat.PAY_CODEC;
