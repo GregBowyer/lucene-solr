@@ -39,8 +39,8 @@ public class Intrinsics {
 
   // TODO - These numbers are totally made up!
   public static final int BLOCK_SIZE = 4096;
-  public static final int MAX_DATA_SIZE = BLOCK_SIZE;
-  public static final int MAX_ENCODED_SIZE = MAX_DATA_SIZE * 32;
+  public static final int MAX_DATA_SIZE = BLOCK_SIZE * 4;
+  public static final int MAX_ENCODED_SIZE = MAX_DATA_SIZE * 8;
 
   public static native void vbyteDecode(byte[] bytes, int[] out, int length) throws IOException;
   public static native int vbyteEncode(int[] postings, int valueCount, byte[] buffer) throws IOException;
