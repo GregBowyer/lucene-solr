@@ -20,6 +20,7 @@ package org.apache.lucene.intrinsics;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.apache.lucene.codecs.lucene50.Lucene50PostingsFormat;
 import org.apache.lucene.store.IndexInput;
 import org.apache.lucene.store.IndexOutput;
 
@@ -38,8 +39,8 @@ public class Intrinsics {
   private static final int ALL_VALUES_EQUAL = 0;
 
   // TODO - These numbers are totally made up!
-  public static final int BLOCK_SIZE = 4096;
-  public static final int MAX_DATA_SIZE = BLOCK_SIZE * 4;
+  public static final int BLOCK_SIZE = Lucene50PostingsFormat.BLOCK_SIZE;
+  public static final int MAX_DATA_SIZE = BLOCK_SIZE * 32;
   public static final int MAX_ENCODED_SIZE = MAX_DATA_SIZE * 8;
 
   public static native void vbyteDecode(byte[] bytes, int[] out, int length) throws IOException;
@@ -82,7 +83,7 @@ public class Intrinsics {
 
   private static boolean isAllEqual(final int[] data) {
     final int v = data[0];
-    for (int i = 1; i < MAX_DATA_SIZE; ++i) {
+    for (int i = 1; i < data.length; ++i) {
       if (data[i] != v) {
         return false;
       }

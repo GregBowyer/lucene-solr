@@ -395,7 +395,7 @@ public final class Lucene50PostingsFormat extends PostingsFormat {
    * a single packed block.
    */
   // NOTE: must be multiple of 64 because of PackedInts long-aligned encoding/decoding
-  public final static int BLOCK_SIZE = 128;
+  public final static int BLOCK_SIZE = 4096;
 
   /** Creates {@code Lucene50PostingsFormat} with default
    *  settings. */
