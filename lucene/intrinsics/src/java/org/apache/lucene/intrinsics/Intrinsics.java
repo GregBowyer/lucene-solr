@@ -38,14 +38,14 @@ public class Intrinsics {
   private static final int ALL_VALUES_EQUAL = 0;
 
   // TODO - These numbers are totally made up!
-  public static final int MAX_DATA_SIZE = 4 * 1024;
+  public static final int MAX_DATA_SIZE = 256;
   public static final int MAX_ENCODED_SIZE = MAX_DATA_SIZE * 32;
 
   public static native void vbyteDecode(byte[] bytes, int[] out, int length) throws IOException;
   public static native int vbyteEncode(int[] postings, int valueCount, byte[] buffer) throws IOException;
 
   public static void readBlock(IndexInput docIn, byte[] encoded, int[] docDeltaBuffer) throws IOException {
-    int numBytes = docIn.readInt();
+    int numBytes = docIn.readByte();
     if (numBytes == ALL_VALUES_EQUAL) {
       final int value = docIn.readVInt();
       Arrays.fill(docDeltaBuffer, 0, MAX_DATA_SIZE, value);
@@ -56,7 +56,7 @@ public class Intrinsics {
   }
 
   public static void skipBlock(IndexInput in) throws IOException {
-    int numBytes = in.readInt();
+    int numBytes = in.readByte();
     if (numBytes == ALL_VALUES_EQUAL) {
       in.readVInt();
       return;
@@ -69,13 +69,14 @@ public class Intrinsics {
   // the original MaskedVByte repo in pure java
   public static void writeBlock(int[] values, int valueCount, byte[] encoded, IndexOutput out) throws IOException {
     if (isAllEqual(values)) {
-      out.writeInt(ALL_VALUES_EQUAL);
+      out.writeByte((byte) ALL_VALUES_EQUAL);
       out.writeVInt(values[0]);
       return;
     }
 
     int numBytes = vbyteEncode(values, valueCount, encoded);
-    out.writeInt(numBytes);
+    assert numBytes <= Byte.MAX_VALUE;
+    out.writeByte((byte) numBytes);
     out.writeBytes(encoded, numBytes);
   }
 
