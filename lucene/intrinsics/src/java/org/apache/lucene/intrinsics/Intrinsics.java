@@ -40,7 +40,7 @@ public class Intrinsics {
 
   // TODO - These numbers are totally made up!
   public static final int BLOCK_SIZE = Lucene50PostingsFormat.BLOCK_SIZE;
-  public static final int MAX_DATA_SIZE = BLOCK_SIZE * 32;
+  public static final int MAX_DATA_SIZE = BLOCK_SIZE * 4;
   public static final int MAX_ENCODED_SIZE = MAX_DATA_SIZE * 8;
 
   public static native void vbyteDecode(byte[] bytes, int[] out, int length) throws IOException;
@@ -50,7 +50,7 @@ public class Intrinsics {
     int numBytes = docIn.readVInt();
     if (numBytes == ALL_VALUES_EQUAL) {
       final int value = docIn.readVInt();
-      Arrays.fill(docDeltaBuffer, 0, MAX_DATA_SIZE, value);
+      Arrays.fill(docDeltaBuffer, 0, docDeltaBuffer.length, value);
       return;
     }
     docIn.readBytes(encoded, 0, numBytes);
