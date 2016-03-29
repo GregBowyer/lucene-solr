@@ -2439,7 +2439,7 @@ JNIEXPORT jint JNICALL Java_org_apache_lucene_intrinsics_Intrinsics_vbyteEncode(
 
     uint32_t *in = (uint32_t*) data;
     uint8_t *out = (uint8_t*) buf;
-    size_t num_bytes = vbyte_encode_delta(in, valueCount * sizeof(jint), out, 0);
+    size_t num_bytes = vbyte_encode(in, valueCount, out);
 
     env->ReleaseByteArrayElements(buffer, buf, 0);
     env->ReleaseIntArrayElements(values, data, 0);
@@ -2465,7 +2465,7 @@ JNIEXPORT void JNICALL Java_org_apache_lucene_intrinsics_Intrinsics_vbyteDecode(
 
     // TODO Experiment with the version that uses num ints vs num bytes
     //size_t num_integers = masked_vbyte_decode_fromcompressedsize(in, out, length);
-    size_t num_integers = masked_vbyte_decode_fromcompressedsize_delta(in, out, length, 0);
+    size_t num_integers = masked_vbyte_decode_fromcompressedsize(in, out, length);
     env->ReleaseByteArrayElements(bytes, vbytes, 0);
     env->ReleaseIntArrayElements(buffer, buf, 0);
 }

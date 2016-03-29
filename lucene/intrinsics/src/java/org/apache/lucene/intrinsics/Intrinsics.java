@@ -38,7 +38,7 @@ public class Intrinsics {
   private static final int ALL_VALUES_EQUAL = 0;
 
   // TODO - These numbers are totally made up!
-  public static final int BLOCK_SIZE = 512;
+  public static final int BLOCK_SIZE = 4096;
   public static final int MAX_DATA_SIZE = BLOCK_SIZE;
   public static final int MAX_ENCODED_SIZE = MAX_DATA_SIZE * 32;
 
@@ -76,7 +76,6 @@ public class Intrinsics {
     }
 
     int numBytes = vbyteEncode(values, valueCount, encoded);
-    assert numBytes <= Byte.MAX_VALUE;
     out.writeVInt(numBytes);
     out.writeBytes(encoded, numBytes);
   }
