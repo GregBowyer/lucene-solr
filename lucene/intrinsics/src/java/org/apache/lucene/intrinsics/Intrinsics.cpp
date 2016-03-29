@@ -2431,7 +2431,8 @@ JNIEXPORT jint JNICALL Java_org_apache_lucene_intrinsics_Intrinsics_vbyteEncode(
         jni_throw("Unable to access the values array in native code");
     }
 
-    jbyte *buf = env->GetByteArrayElements(buffer, 0);
+    jboolean isCopy;
+    jbyte *buf = env->GetByteArrayElements(buffer, &isCopy);
     if (buf == NULL) {
         env->ReleaseIntArrayElements(values, data, 0);
         jni_throw("Unable to access the buffer array in native code");
@@ -2441,15 +2442,16 @@ JNIEXPORT jint JNICALL Java_org_apache_lucene_intrinsics_Intrinsics_vbyteEncode(
     uint8_t *out = (uint8_t*) buf;
     size_t num_bytes = vbyte_encode(in, valueCount, out);
 
-    env->ReleaseByteArrayElements(buffer, buf, 0);
-    env->ReleaseIntArrayElements(values, data, 0);
+    env->ReleaseByteArrayElements(buffer, buf, isCopy ? 0 : JNI_ABORT);
+    env->ReleaseIntArrayElements(values, data, JNI_ABORT);
     return (jint) num_bytes;
 }
 
 JNIEXPORT void JNICALL Java_org_apache_lucene_intrinsics_Intrinsics_vbyteDecode(
         JNIEnv *env, jclass _ignore, jbyteArray bytes, jintArray buffer, jint length) {
 
-    jint *buf = env->GetIntArrayElements(buffer, 0);
+    jboolean isCopy;
+    jint *buf = env->GetIntArrayElements(buffer, &isCopy);
     if (buf == NULL) {
         jni_throw("Unable to access the buffer array in native code");
     }
@@ -2466,8 +2468,8 @@ JNIEXPORT void JNICALL Java_org_apache_lucene_intrinsics_Intrinsics_vbyteDecode(
     // TODO Experiment with the version that uses num ints vs num bytes
     //size_t num_integers = masked_vbyte_decode_fromcompressedsize(in, out, length);
     size_t num_integers = masked_vbyte_decode_fromcompressedsize(in, out, length);
-    env->ReleaseByteArrayElements(bytes, vbytes, 0);
-    env->ReleaseIntArrayElements(buffer, buf, 0);
+    env->ReleaseByteArrayElements(bytes, vbytes, JNI_ABORT);
+    env->ReleaseIntArrayElements(buffer, buf, isCopy ? 0 : JNI_ABORT);
 }
 
 }
