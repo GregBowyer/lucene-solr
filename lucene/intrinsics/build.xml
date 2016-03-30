@@ -46,6 +46,7 @@
 
       <compilerarg value="-fPIC" />
       <compilerarg value="-O3" />
+      <compilerarg value="-ffast-math" />
       <compilerarg value="-march=native" />
       <!--
       <compilerarg value="-Wall" />
