@@ -574,6 +574,28 @@
     <property name="misc-javadocs.uptodate" value="true"/>
   </target>
 
+  <property name="numa.jar" value="${common.dir}/build/numa/lucene-numa-${version}.jar"/>
+  <target name="check-numa-uptodate" unless="numa.uptodate">
+    <module-uptodate name="numa" jarfile="${numa.jar}" property="numa.uptodate"/>
+  </target>
+  <target name="jar-numa" unless="numa.uptodate" depends="check-numa-uptodate">
+    <ant dir="${common.dir}/numa" target="jar-core" inheritAll="false">
+      <propertyset refid="uptodate.and.compiled.properties"/>
+    </ant>
+    <property name="numa.uptodate" value="true"/>
+  </target>
+
+  <property name="numa-javadoc.jar" value="${common.dir}/build/numa/lucene-numa-${version}-javadoc.jar"/>
+  <target name="check-numa-javadocs-uptodate" unless="numa-javadocs.uptodate">
+    <module-uptodate name="numa" jarfile="${numa-javadoc.jar}" property="numa-javadocs.uptodate"/>
+  </target>
+  <target name="javadocs-numa" unless="numa-javadocs.uptodate" depends="check-numa-javadocs-uptodate">
+    <ant dir="${common.dir}/numa" target="javadocs" inheritAll="false">
+      <propertyset refid="uptodate.and.compiled.properties"/>
+    </ant>
+    <property name="numa-javadocs.uptodate" value="true"/>
+  </target>
+
   <property name="sandbox.jar" value="${common.dir}/build/sandbox/lucene-sandbox-${version}.jar"/>
   <target name="check-sandbox-uptodate" unless="sandbox.uptodate">
     <module-uptodate name="sandbox" jarfile="${sandbox.jar}" property="sandbox.uptodate"/>
