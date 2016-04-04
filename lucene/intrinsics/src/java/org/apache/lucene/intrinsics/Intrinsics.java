@@ -57,18 +57,21 @@ public class Intrinsics {
 
   public static void readBlock(IndexInput docIn, byte[] encoded, int[] docDeltaBuffer) throws IOException {
     byte postingsType = docIn.readByte();
-    int valueOrBytes = docIn.readVInt();
+    int valueOrBytes = -1;
     switch (postingsType) {
       case ALL_VALUES_EQUAL:
+        valueOrBytes = docIn.readVInt();
         Arrays.fill(docDeltaBuffer, 0, docDeltaBuffer.length, valueOrBytes);
         return;
       case UNSORTED_POSTINGS:
+        valueOrBytes = docIn.readVInt();
         docIn.readBytes(encoded, 0, valueOrBytes);
         vbyteDecode(encoded, docDeltaBuffer, valueOrBytes);
         return;
       case DELTA_POSTINGS:
-        docIn.readBytes(encoded, 0, valueOrBytes);
         int delta = docIn.readVInt();
+        valueOrBytes = docIn.readVInt();
+        docIn.readBytes(encoded, 0, valueOrBytes);
         vbyteDecodeDelta(encoded, docDeltaBuffer, valueOrBytes, delta);
         return;
       case SMALL_BLOCK:
@@ -76,18 +79,33 @@ public class Intrinsics {
         for (int i = 0; i < values; i++) {
           docDeltaBuffer[i] = docIn.readVInt();
         }
+        return;
       default:
         throw new CorruptIndexException("Unknown intrinsic block format", docIn);
     }
   }
 
   public static void skipBlock(IndexInput in) throws IOException {
-    int numBytes = in.readVInt();
-    if (numBytes == ALL_VALUES_EQUAL) {
-      in.readVInt();
-      return;
+    byte blockType = in.readByte();
+    switch (blockType) {
+      case ALL_VALUES_EQUAL:
+        in.readVInt();
+        in.readVInt();
+        return;
+      case SMALL_BLOCK:
+        byte vints = in.readByte();
+        for (int i=0; i<vints; i++) {
+          in.readVInt();
+        }
+        return;
+      case DELTA_POSTINGS:
+        in.readVInt();
+        //fallthrough
+      case UNSORTED_POSTINGS:
+        int numBytes = in.readVInt();
+        in.seek(in.getFilePointer() + numBytes);
+        return;
     }
-    in.seek(in.getFilePointer() + numBytes);
   }
 
   // There is no SIMD vectorisation on the write path, as such we dont need to slow indexing
@@ -112,6 +130,7 @@ public class Intrinsics {
     if (deltaOffset >= 0) {
       numBytes = vbyteEncodeDelta(values, valueCount, deltaOffset, encoded);
       out.writeByte(DELTA_POSTINGS);
+      out.writeVInt(deltaOffset);
     } else {
       numBytes = vbyteEncode(values, valueCount, encoded);
       out.writeByte(UNSORTED_POSTINGS);
@@ -119,11 +138,6 @@ public class Intrinsics {
 
     assert numBytes > 0;
     out.writeVInt(numBytes);
-
-    if (deltaOffset >= 0) {
-      out.writeVInt(deltaOffset);
-    }
-
     out.writeBytes(encoded, numBytes);
   }
 

@@ -239,7 +239,7 @@ public final class IntrinsicsPostingsWriter extends PushPostingsWriterBase {
     docCount++;
 
     if (docBufferUpto == BLOCK_SIZE) {
-      Intrinsics.writeBlock(docDeltaBuffer, docBufferUpto, encoded, docOut);
+      Intrinsics.writeDeltaBlock(docDeltaBuffer, docBufferUpto, encoded, docDeltaBuffer[0], docOut);
       if (writeFreqs) {
         Intrinsics.writeBlock(freqBuffer, docBufferUpto, encoded, docOut);
       }
