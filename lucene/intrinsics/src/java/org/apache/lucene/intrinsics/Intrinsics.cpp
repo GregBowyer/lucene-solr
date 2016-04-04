@@ -2447,6 +2447,32 @@ JNIEXPORT jint JNICALL Java_org_apache_lucene_intrinsics_Intrinsics_vbyteEncode(
     return (jint) num_bytes;
 }
 
+// TODO: ByteBuffer because Objectcopy is object copy
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+JNIEXPORT jint JNICALL Java_org_apache_lucene_intrinsics_Intrinsics_vbyteEncodeDelta(
+        JNIEnv *env, jclass _ignore, jintArray values, jint valueCount, jint deltaOffset, jbyteArray buffer) {
+
+    jint *data = (jint*) env->GetPrimitiveArrayCritical(values, 0);
+    if (data == NULL) {
+        jni_throw("Unable to access the values array in native code");
+    }
+
+    jboolean isCopy;
+    jbyte *buf = (jbyte*) env->GetPrimitiveArrayCritical(buffer, &isCopy);
+    if (buf == NULL) {
+        env->ReleasePrimitiveArrayCritical(values, data, JNI_ABORT);
+        jni_throw("Unable to access the buffer array in native code");
+    }
+
+    uint32_t *in = (uint32_t*) data;
+    uint8_t *out = (uint8_t*) buf;
+    size_t num_bytes = vbyte_encode_delta(in, valueCount, out, deltaOffset);
+
+    env->ReleasePrimitiveArrayCritical(buffer, buf, isCopy ? 0 : JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(values, data, JNI_ABORT);
+    return (jint) num_bytes;
+}
+
 JNIEXPORT void JNICALL Java_org_apache_lucene_intrinsics_Intrinsics_vbyteDecode(
         JNIEnv *env, jclass _ignore, jbyteArray bytes, jintArray buffer, jint length) {
 
@@ -2468,6 +2494,31 @@ JNIEXPORT void JNICALL Java_org_apache_lucene_intrinsics_Intrinsics_vbyteDecode(
     // TODO Experiment with the version that uses num ints vs num bytes
     //size_t num_integers = masked_vbyte_decode_fromcompressedsize(in, out, length);
     size_t num_integers = masked_vbyte_decode_fromcompressedsize(in, out, length);
+    env->ReleasePrimitiveArrayCritical(bytes, vbytes, JNI_ABORT);
+    env->ReleasePrimitiveArrayCritical(buffer, buf, isCopy ? 0 : JNI_ABORT);
+}
+
+JNIEXPORT void JNICALL Java_org_apache_lucene_intrinsics_Intrinsics_vbyteDecodeDelta(
+        JNIEnv *env, jclass _ignore, jbyteArray bytes, jintArray buffer, jint length, jint delta) {
+
+    jboolean isCopy;
+    jint *buf = (jint*) env->GetPrimitiveArrayCritical(buffer, &isCopy);
+    if (buf == NULL) {
+        jni_throw("Unable to access the buffer array in native code");
+    }
+
+    jbyte *vbytes = (jbyte*) env->GetPrimitiveArrayCritical(bytes, 0);
+    if (vbytes == NULL) {
+        env->ReleasePrimitiveArrayCritical(buffer, buf, 0);
+        jni_throw("Unable to access the vbytes array in native code");
+    }
+
+    uint8_t *in = (uint8_t*) vbytes;
+    uint32_t *out = (uint32_t*) buf;
+
+    // TODO Experiment with the version that uses num ints vs num bytes
+    //size_t num_integers = masked_vbyte_decode_fromcompressedsize(in, out, length);
+    size_t num_integers = masked_vbyte_decode_fromcompressedsize_delta(in, out, length, delta);
     env->ReleasePrimitiveArrayCritical(bytes, vbytes, JNI_ABORT);
     env->ReleasePrimitiveArrayCritical(buffer, buf, isCopy ? 0 : JNI_ABORT);
 }
